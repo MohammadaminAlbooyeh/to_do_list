@@ -1,6 +1,6 @@
 from pathlib import Path
 
-# Define default file path as a Path object
+# Define default file path
 FILEPATH = Path(__file__).resolve().parent.parent / "files" / "todos.txt"
 
 def get_todos(file_path=FILEPATH):
@@ -10,13 +10,7 @@ def get_todos(file_path=FILEPATH):
             return [line.strip() for line in file.readlines()]
     return []
 
-def write_todos(todos, file_path=FILEPATH):
-    """Write todos to a file (line by line)."""
-    with file_path.open("w", encoding="utf-8") as file:
-        for todo in todos:
-            file.write(f"{todo}\n")
-
 def save_todos(todos, file_path=FILEPATH):
-    """Save todos to a file (more efficiently)."""
+    """Save todos to a file."""
     with file_path.open("w", encoding="utf-8") as file:
         file.writelines(f"{item}\n" for item in todos)

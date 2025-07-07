@@ -4,4 +4,3 @@ ciro
 bahar
 python
 python
-python
