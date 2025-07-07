@@ -14,3 +14,4 @@ def save_todos(todos, file_path=FILEPATH):
     """Save todos to a file."""
     with file_path.open("w", encoding="utf-8") as file:
         file.writelines(f"{item}\n" for item in todos)
+
