@@ -1,6 +1,3 @@
+python
 sharen
-dario
-ciro
 bahar
-python
-python

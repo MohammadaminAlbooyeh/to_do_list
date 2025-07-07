@@ -1,27 +1,28 @@
 import streamlit as st
-from functions import get_todos, save_todos
-from pathlib import Path
+from function_db import get_todos, add_todo, delete_todo, init_db
 
-FILEPATH = Path(__file__).resolve().parent.parent / "files" / "todos.txt"
+# Initialize DB (run once per session)
+init_db()
 
 st.set_page_config(page_title="To-Do List", page_icon="✅", layout="centered")
 st.title("📝 To-Do List")
 
 if "todos" not in st.session_state:
-    st.session_state.todos = get_todos(FILEPATH)
+    st.session_state.todos = get_todos()
 
-def add_todo():
+def add_todo_streamlit():
     todo = st.session_state.new_todo.strip()
     if todo:
-        st.session_state.todos.append(todo)
-        save_todos(st.session_state.todos, FILEPATH)
+        add_todo(todo)
+        st.session_state.todos = get_todos()
         st.session_state.new_todo = ""
 
 def complete_todo(idx):
-    st.session_state.todos.pop(idx)
-    save_todos(st.session_state.todos, FILEPATH)
+    todo_text = st.session_state.todos[idx]
+    delete_todo(todo_text)
+    st.session_state.todos = get_todos()
 
-st.text_input("Add a new to-do:", key="new_todo", on_change=add_todo)
+st.text_input("Add a new to-do:", key="new_todo", on_change=add_todo_streamlit)
 
 st.write("### Your Todos:")
 for i, todo in enumerate(st.session_state.todos):
