@@ -5,31 +5,41 @@ from pathlib import Path
 FILEPATH = Path(__file__).resolve().parent.parent / "files" / "todos.txt"
 
 def main():
+    sg.theme("DarkGrey13")  # Use a dark theme
+
+    font_big = ("Arial", 16)
+    font_btn = ("Arial", 14, "bold")
+    font_status = ("Arial", 13)
+
     window = sg.Window(
         "To-Do List",
         layout=[
-            [sg.Text("Enter a to-do item:", text_color="white", background_color="black")],
-            [sg.InputText(key="todo_input", text_color="black", background_color="lightyellow")],
+            [sg.Text("Enter a to-do item:", text_color="#EEEEEE", background_color="#222831", font=font_big)],
+            [sg.InputText(key="todo_input", text_color="#222831", background_color="#EEEEEE", font=font_big)],
             [
-                sg.Button("Add", button_color=("white", "green")),
-                sg.Button("Show", button_color=("white", "blue")),
-                sg.Button("Edit", button_color=("black", "yellow")),
-                sg.Button("Complete", button_color=("white", "red")),
-                sg.Button("Exit", button_color=("white", "gray")),
+                sg.Button("Add", button_color=("#EEEEEE", "#393E46"), font=font_btn),
+                sg.Button("Show", button_color=("#EEEEEE", "#30475E"), font=font_btn),
+                sg.Button("Edit", button_color=("#222831", "#FFD369"), font=font_btn),
+                sg.Button("Complete", button_color=("#EEEEEE", "#B23A48"), font=font_btn),
+                sg.Button("Exit", button_color=("#EEEEEE", "#222831"), font=font_btn),
             ],
             [
                 sg.Listbox(
                     values=functions.get_todos(FILEPATH),
                     size=(40, 10),
                     key="todo_list",
-                    text_color="blue",
-                    background_color="lightgray"
+                    text_color="#EEEEEE",
+                    background_color="#393E46",
+                    font=font_big,
+                    select_mode=sg.LISTBOX_SELECT_MODE_SINGLE
                 )
             ],
-            [sg.Text("Status:", size=(10, 1), text_color="black", background_color="lightyellow"),
-             sg.Text("", key="status", text_color="black", background_color="lightyellow")],
+            [
+                sg.Text("Status:", size=(10, 1), text_color="#FFD369", background_color="#222831", font=font_status),
+                sg.Text("", key="status", text_color="#FFD369", background_color="#222831", font=font_status)
+            ],
         ],
-        background_color="lightblue"
+        background_color="#222831"
     )
     todos = functions.get_todos(FILEPATH)
 
