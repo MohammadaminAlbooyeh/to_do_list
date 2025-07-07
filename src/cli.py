@@ -82,3 +82,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+# This code is a simple command-line To-Do application that allows users to add, show, edit, and complete tasks.
