@@ -1,57 +1,49 @@
-import React, { useEffect, useState } from 'react';
+// src/App.js
+import React from 'react';
+import './App.css';
 
 function App() {
-  const [todos, setTodos] = useState([]);
-  const [title, setTitle] = useState("");
-
-  useEffect(() => {
-    fetch('/api/todos')
-      .then(res => res.json())
-      .then(setTodos);
-  }, []);
-
-  const addTodo = async (e) => {
-    e.preventDefault();
-    if (!title) return;
-    await fetch('/api/todos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title })
-    });
-    setTitle("");
-    fetch('/api/todos').then(res => res.json()).then(setTodos);
-  };
-
-  const toggleTodo = async (id, done) => {
-    await fetch(`/api/todos/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ done: !done })
-    });
-    fetch('/api/todos').then(res => res.json()).then(setTodos);
-  };
-
-  const deleteTodo = async (id) => {
-    await fetch(`/api/todos/${id}`, { method: 'DELETE' });
-    fetch('/api/todos').then(res => res.json()).then(setTodos);
-  };
-
   return (
-    <div style={{ maxWidth: 400, margin: '2rem auto', fontFamily: 'sans-serif' }}>
-      <h2>To-Do List</h2>
-      <form onSubmit={addTodo} style={{ display: 'flex', gap: 8 }}>
-        <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Add new todo..." />
-        <button type="submit">Add</button>
-      </form>
-      <ul style={{ padding: 0, listStyle: 'none' }}>
-        {todos.map(todo => (
-          <li key={todo.id} style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '8px 0' }}>
-            <input type="checkbox" checked={!!todo.done} onChange={() => toggleTodo(todo.id, todo.done)} />
-            <span style={{ textDecoration: todo.done ? 'line-through' : 'none' }}>{todo.title}</span>
-            <button onClick={() => deleteTodo(todo.id)} style={{ marginLeft: 'auto' }}>Delete</button>
-          </li>
-        ))}
-      </ul>
+    <div className="App">
+      {/* This div creates the red bar on the left */}
+      <div className="left-red-bar">
+        {/* Navigation Buttons */}
+        <button className="nav-button">Dashboard</button>
+        <button className="nav-button">My Tasks</button>
+        <button className="nav-button">Task Categories</button>
+      </div>
+
+      {/* This div will contain all your main application content */}
+      <div className="main-content">
+        <h1>My To-Do List</h1>
+        <p>This is where your To-Do list content will appear.</p>
+        <input type="text" placeholder="Add a new task..." />
+        <button>Add Task</button>
+
+        {/* New: Container for the content boxes */}
+        <div className="content-boxes-container">
+          {/* Box 1: To-Do */}
+          <div className="content-box">
+            <h2>To-Do</h2>
+            {/* Placeholder for actual To-Do items */}
+            <p>You have pending tasks here.</p>
+          </div>
+
+          {/* Box 2: Task Status */}
+          <div className="content-box">
+            <h2>Task Status</h2>
+            {/* Placeholder for status overview */}
+            <p>See your task progress.</p>
+          </div>
+
+          {/* Box 3: Completed Tasks */}
+          <div className="content-box">
+            <h2>Completed Tasks</h2>
+            {/* Placeholder for completed tasks list */}
+            <p>Review your finished tasks.</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

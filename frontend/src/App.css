@@ -1,0 +1,145 @@
+/* src/App.css */
+
+/*
+  Global styles to reset default browser margins/paddings.
+  Ensures that the entire page uses the space as intended.
+*/
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Make sure html and body take full viewport height */
+  width: 100%;  /* Make sure html and body take full viewport width */
+  box-sizing: border-box; /* Include padding and border in element's total width/height */
+  font-family: Arial, sans-serif; /* A default font for better readability */
+}
+
+/*
+  The main application container.
+  Uses Flexbox to arrange the red sidebar and main content side-by-side.
+*/
+.App {
+  display: flex; /* Enables Flexbox layout */
+  height: 100vh; /* Takes full height of the viewport */
+  width: 100vw; /* Takes full width of the viewport */
+  overflow: hidden; /* Prevents unwanted scrollbars on the main app layout */
+}
+
+/*
+  Styles for the red bar on the left (sidebar).
+*/
+.left-red-bar {
+  width: 300px; /* Adjust the width of the red bar as needed */
+  background-color: #d45454; /* Bright red color */
+  height: 100%; /* Ensures it takes the full height of its parent (.App) */
+  flex-shrink: 0; /* Prevents this bar from shrinking if space is tight */
+
+  /* Flexbox properties to arrange navigation buttons vertically */
+  display: flex;
+  flex-direction: column;    /* Stack children (buttons) vertically */
+  align-items: center;       /* Center items horizontally within the bar */
+
+  /* Padding to control spacing from the top, right, bottom, and left edges */
+  padding: 2cm 0 20px 0; /* Top: 2cm, Right: 0, Bottom: 20px, Left: 0 */
+  flex-grow: 1; /* Allows the sidebar to grow and take available height if content grows (mostly for safety) */
+}
+
+/*
+  Styles for the main content area of your To-Do list.
+  It will take up the remaining space after the red bar.
+*/
+.main-content {
+  flex-grow: 1; /* Allows this div to fill the remaining horizontal space */
+  padding: 20px; /* Adds some space around the content inside */
+  overflow-y: auto; /* Adds a vertical scrollbar if content overflows this area */
+  background-color: #f0f0f0; /* Light gray background for contrast */
+}
+
+/* Basic styling for the H1 heading in the main content */
+.main-content h1 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Basic styling for the input field in the main content */
+.main-content input[type="text"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+  width: 250px;
+}
+
+/* Basic styling for generic buttons in the main content */
+.main-content button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.main-content button:hover {
+  background-color: #0056b3;
+}
+
+/* Styles for the navigation buttons inside the red sidebar */
+.nav-button {
+  padding: 10px 20px;
+  background-color: #ffffff; /* White background */
+  color: #d45454; /* Red text color matching sidebar */
+  border: 2px solid #ffffff; /* White border */
+  border-radius: 8px; /* Slightly rounded corners */
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for hover effects */
+  width: 80%; /* Make buttons take up most of the bar's width */
+  margin-bottom: 1cm; /* 1 centimeter spacing between each button */
+}
+
+/* Specific rule to remove bottom margin from the very last navigation button */
+.nav-button:last-child {
+  margin-bottom: 0;
+}
+
+/* Hover effects for navigation buttons */
+.nav-button:hover {
+  background-color: #ffaaaa; /* Lighter red on hover */
+  color: #ffffff; /* White text on hover */
+}
+
+/* Styles for the container of the content boxes in the main area */
+.content-boxes-container {
+  display: flex;     /* Use Flexbox to arrange boxes side-by-side */
+  flex-wrap: wrap;   /* Allow boxes to wrap to the next line if space runs out */
+  gap: 20px;         /* Space between the boxes (both horizontally and vertically) */
+  margin-top: 40px;  /* Add some space above the boxes from the input/button */
+  justify-content: center; /* Center boxes if they don't fill the entire row */
+}
+
+/* Styles for individual content boxes (To-Do, Task Status, Completed Tasks) */
+.content-box {
+  background-color: #ffffff; /* White background for the boxes */
+  border: 1px solid #e0e0e0; /* Light border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  flex: 1; /* Allow boxes to grow and shrink proportionally */
+  min-width: 250px; /* Minimum width for each box before wrapping */
+  max-width: 30%; /* Maximum width for each box (to try and fit 3 per row) */
+  text-align: center; /* Center the text inside the boxes */
+}
+
+.content-box h2 {
+  color: #555;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.5em;
+}
+
+.content-box p {
+  color: #777;
+  font-size: 0.9em;
+}
