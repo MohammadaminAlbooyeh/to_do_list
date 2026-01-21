@@ -1,59 +1,75 @@
-import sqlite3
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from fastapi import FastAPI, HTTPException
+from sqlmodel import Field, Session, SQLModel, create_engine, select
+from typing import List, Optional
 
-app = Flask(__name__)
-CORS(app)
+# Database setup
+DATABASE_URL = "sqlite:///./todo.db"
+engine = create_engine(DATABASE_URL, echo=True)
 
-def get_db_connection():
-    conn = sqlite3.connect('todo.db')
-    conn.row_factory = sqlite3.Row
-    return conn
+# Models
+class Todo(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    title: str
+    done: bool = False
 
-@app.route('/api/todos', methods=['GET'])
+# Pydantic models for API
+class TodoCreate(SQLModel):
+    title: str
+
+class TodoUpdate(SQLModel):
+    title: Optional[str] = None
+    done: Optional[bool] = None
+
+# Create tables
+SQLModel.metadata.create_all(engine)
+
+# FastAPI app
+app = FastAPI()
+
+# Routes
+@app.get("/todos", response_model=List[Todo])
 def get_todos():
-    conn = get_db_connection()
-    todos = conn.execute('SELECT * FROM todos').fetchall()
-    conn.close()
-    return jsonify([dict(row) for row in todos])
+    with Session(engine) as session:
+        todos = session.exec(select(Todo)).all()
+        return todos
 
-@app.route('/api/todos', methods=['POST'])
-def add_todo():
-    data = request.get_json()
-    title = data.get('title')
-    if not title:
-        return jsonify({'error': 'Title is required'}), 400
-    conn = get_db_connection()
-    conn.execute('INSERT INTO todos (title, done) VALUES (?, ?)', (title, False))
-    conn.commit()
-    conn.close()
-    return jsonify({'message': 'Todo added'}), 201
+@app.post("/todos", response_model=Todo)
+def create_todo(todo: TodoCreate):
+    with Session(engine) as session:
+        db_todo = Todo(title=todo.title)
+        session.add(db_todo)
+        session.commit()
+        session.refresh(db_todo)
+        return db_todo
 
-@app.route('/api/todos/<int:todo_id>', methods=['PUT'])
-def update_todo(todo_id):
-    data = request.get_json()
-    done = data.get('done')
-    conn = get_db_connection()
-    conn.execute('UPDATE todos SET done = ? WHERE id = ?', (done, todo_id))
-    conn.commit()
-    conn.close()
-    return jsonify({'message': 'Todo updated'})
+@app.put("/todos/{todo_id}", response_model=Todo)
+def update_todo(todo_id: int, todo_update: TodoUpdate):
+    with Session(engine) as session:
+        todo = session.exec(select(Todo).where(Todo.id == todo_id)).first()
+        if not todo:
+            raise HTTPException(status_code=404, detail="Todo not found")
+        
+        if todo_update.title is not None:
+            todo.title = todo_update.title
+        if todo_update.done is not None:
+            todo.done = todo_update.done
+        
+        session.add(todo)
+        session.commit()
+        session.refresh(todo)
+        return todo
 
-@app.route('/api/todos/<int:todo_id>', methods=['DELETE'])
-def delete_todo(todo_id):
-    conn = get_db_connection()
-    conn.execute('DELETE FROM todos WHERE id = ?', (todo_id,))
-    conn.commit()
-    conn.close()
-    return jsonify({'message': 'Todo deleted'})
+@app.delete("/todos/{todo_id}")
+def delete_todo(todo_id: int):
+    with Session(engine) as session:
+        todo = session.exec(select(Todo).where(Todo.id == todo_id)).first()
+        if not todo:
+            raise HTTPException(status_code=404, detail="Todo not found")
+        
+        session.delete(todo)
+        session.commit()
+        return {"message": "Todo deleted"}
 
-if __name__ == '__main__':
-    # Create table if not exists
-    conn = get_db_connection()
-    conn.execute('''CREATE TABLE IF NOT EXISTS todos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        done BOOLEAN NOT NULL DEFAULT 0
-    )''')
-    conn.close()
-    app.run(host='0.0.0.0', port=5050)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=5050)

@@ -6,8 +6,6 @@ services:
       - "5050:5050"
     volumes:
       - ./backend:/app
-    environment:
-      - FLASK_ENV=development
   frontend:
     build: ./frontend
     ports:

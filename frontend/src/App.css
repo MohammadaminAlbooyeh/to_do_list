@@ -28,7 +28,7 @@ html, body {
   Styles for the red bar on the left (sidebar).
 */
 .left-red-bar {
-  width: 300px; /* Adjust the width of the red bar as needed */
+  width: 200px; /* Reduced width */
   background-color: #d45454; /* Bright red color */
   height: 100%; /* Ensures it takes the full height of its parent (.App) */
   flex-shrink: 0; /* Prevents this bar from shrinking if space is tight */
