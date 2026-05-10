@@ -21,7 +21,7 @@
     },
     "web": {
       "build": {
-        "entry": "./web/index.web.js"
+        "output": "single"
       }
     }
   }

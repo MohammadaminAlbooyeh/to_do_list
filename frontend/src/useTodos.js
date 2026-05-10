@@ -8,6 +8,7 @@ export default function useTodos() {
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [stats, setStats] = useState(null);
 
   const fetch = useCallback(async () => {
     setLoading(true);
@@ -15,53 +16,72 @@ export default function useTodos() {
       const { data } = await api.get('/todos');
       setTodos(data);
       setError(null);
-    } catch {
+    } catch (err) {
       setError('Cannot reach server');
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
-
-  const add = useCallback(async (title, priority = 'medium') => {
-    const trimmed = title.trim();
-    if (!trimmed) return;
+  const fetchStats = useCallback(async () => {
     try {
-      const { data } = await api.post('/todos', { title: trimmed, priority });
-      setTodos(prev => [...prev, data]);
-      setError(null);
-    } catch {
-      setError('Failed to add task');
+      const { data } = await api.get('/stats');
+      setStats(data);
+    } catch (err) {
+      console.error('Failed to fetch stats');
     }
   }, []);
 
-  const toggle = useCallback(async (id, done) => {
-    const prev = [...todos];
-    setTodos(prev => prev.map(t => t.id === id ? { ...t, done } : t));
+  useEffect(() => {
+    fetch();
+    fetchStats();
+  }, [fetch, fetchStats]);
+
+  const add = useCallback(async (title, priority = 'medium', dueDate = null, category = 'Personal') => {
+    const trimmed = title.trim();
+    if (!trimmed) return;
     try {
-      await api.put(`/todos/${id}`, { done });
+      const { data } = await api.post('/todos', { title: trimmed, priority, due_date: dueDate, category });
+      setTodos(prev => [...prev, data]);
+      fetchStats();
       setError(null);
-    } catch {
+    } catch (err) {
+      setError('Failed to add task');
+    }
+  }, [fetchStats]);
+
+  const update = useCallback(async (id, updateData) => {
+    const prev = [...todos];
+    setTodos(prev => prev.map(t => t.id === id ? { ...t, ...updateData } : t));
+    try {
+      await api.put(`/todos/${id}`, updateData);
+      fetchStats();
+      setError(null);
+    } catch (err) {
       setTodos(prev);
       setError('Failed to update');
     }
-  }, [todos]);
+  }, [todos, fetchStats]);
+
+  const toggle = useCallback(async (id, done) => {
+    update(id, { done });
+  }, [update]);
 
   const remove = useCallback(async (id) => {
     const prev = [...todos];
     setTodos(prev => prev.filter(t => t.id !== id));
     try {
       await api.delete(`/todos/${id}`);
+      fetchStats();
       setError(null);
-    } catch {
+    } catch (err) {
       setTodos(prev);
       setError('Failed to delete');
     }
-  }, [todos]);
+  }, [todos, fetchStats]);
 
   const incomplete = todos.filter(t => !t.done);
   const completed = todos.filter(t => t.done);
 
-  return { todos, incomplete, completed, loading, error, fetch, add, toggle, remove };
+  return { todos, incomplete, completed, loading, error, stats, fetch, add, toggle, update, remove };
 }

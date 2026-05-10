@@ -1,18 +1,29 @@
-version: '3.8'
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      platforms:
+        - linux/arm64
+        - linux/amd64
     ports:
       - "5050:5050"
     volumes:
-      - ./backend:/app
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
+      - todo_data:/app/todo.db
+    restart: unless-stopped
     environment:
-      - CHOKIDAR_USEPOLLING=true
+      - TZ=UTC
+
+  frontend:
+    build:
+      context: ./frontend
+      platforms:
+        - linux/arm64
+        - linux/amd64
+    ports:
+      - "80:80"
     depends_on:
       - backend
+    restart: unless-stopped
+
+volumes:
+  todo_data:

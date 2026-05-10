@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 
 const PRIORITY_COLORS = {
@@ -7,77 +7,45 @@ const PRIORITY_COLORS = {
   low: '#22c55e',
 };
 
-const PRIORITY_LABELS = {
-  high: '!!',
-  medium: '!',
-  low: '·',
-};
-
 export default function TaskItem({ item, onToggle, onDelete }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const opacityAnim = useRef(new Animated.Value(1)).current;
 
   const priorityColor = PRIORITY_COLORS[item.priority] || '#f59e0b';
-  const priorityLabel = PRIORITY_LABELS[item.priority] || '·';
 
   const handlePress = () => {
     Animated.sequence([
-      Animated.spring(scaleAnim, {
-        toValue: 0.96,
-        useNativeDriver: true,
-        friction: 8,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        useNativeDriver: true,
-        friction: 4,
-      }),
+      Animated.spring(scaleAnim, { toValue: 0.95, useNativeDriver: true, friction: 8 }),
+      Animated.spring(scaleAnim, { toValue: 1, useNativeDriver: true, friction: 4 }),
     ]).start();
     onToggle(item.id, !item.done);
   };
 
   return (
-    <Animated.View
-      style={[
-        styles.wrap,
-        item.done && styles.wrapDone,
-        { transform: [{ scale: scaleAnim }], opacity: opacityAnim },
-      ]}
-    >
-      <View style={[styles.priorityBar, { backgroundColor: priorityColor }]} />
-      <TouchableOpacity
-        style={styles.check}
-        onPress={handlePress}
-        activeOpacity={0.7}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-      >
-        <View style={[styles.checkCircle, item.done && styles.checkCircleDone]}>
-          {item.done && <Text style={styles.checkMark}>&#10003;</Text>}
+    <Animated.View style={[styles.wrap, item.done && styles.wrapDone, { transform: [{ scale: scaleAnim }] }]}>
+      <TouchableOpacity style={styles.contentRow} onPress={handlePress} activeOpacity={0.8}>
+        <View style={[styles.check, item.done && { backgroundColor: priorityColor, borderColor: priorityColor }]}>
+          {item.done && <Text style={styles.checkMark}>✓</Text>}
+        </View>
+        <View style={styles.textDetails}>
+          <Text style={[styles.title, item.done && styles.titleDone]} numberOfLines={2}>
+            {item.title}
+          </Text>
+          <View style={styles.meta}>
+            <View style={[styles.priorityTag, { backgroundColor: priorityColor + '15' }]}>
+              <View style={[styles.priorityDot, { backgroundColor: priorityColor }]} />
+              <Text style={[styles.priorityText, { color: priorityColor }]}>{item.priority}</Text>
+            </View>
+            {item.category && (
+              <View style={styles.categoryTag}>
+                <Text style={styles.categoryText}>{item.category}</Text>
+              </View>
+            )}
+          </View>
         </View>
       </TouchableOpacity>
-      <View style={styles.content}>
-        <Text
-          style={[styles.title, item.done && styles.titleDone]}
-          numberOfLines={2}
-        >
-          {item.title}
-        </Text>
-        <View style={styles.meta}>
-          <View style={[styles.priorityDot, { backgroundColor: priorityColor }]}>
-            <Text style={styles.priorityDotText}>{priorityLabel}</Text>
-          </View>
-          {item.done && <Text style={styles.doneLabel}>done</Text>}
-        </View>
-      </View>
-      <TouchableOpacity
-        style={styles.del}
-        onPress={() => onDelete(item.id)}
-        activeOpacity={0.6}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-      >
-        <View style={styles.delInner}>
-          <Text style={styles.delIcon}>&#10005;</Text>
-        </View>
+      
+      <TouchableOpacity style={styles.deleteBtn} onPress={() => onDelete(item.id)}>
+        <Text style={styles.deleteIcon}>✕</Text>
       </TouchableOpacity>
     </Animated.View>
   );
@@ -87,98 +55,89 @@ const styles = StyleSheet.create({
   wrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.04)',
-    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.02)',
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.06)',
-    marginBottom: 8,
-    overflow: 'hidden',
+    borderColor: 'rgba(255,255,255,0.04)',
+    marginBottom: 12,
+    padding: 14,
   },
   wrapDone: {
-    opacity: 0.5,
+    opacity: 0.4,
   },
-  priorityBar: {
-    width: 4,
-    alignSelf: 'stretch',
-    borderTopLeftRadius: 16,
-    borderBottomLeftRadius: 16,
+  contentRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   check: {
-    paddingLeft: 14,
-    paddingVertical: 14,
-  },
-  checkCircle: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+    width: 24,
+    height: 24,
+    borderRadius: 8,
     borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.2)',
+    borderColor: 'rgba(255,255,255,0.1)',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  checkCircleDone: {
-    backgroundColor: '#22c55e',
-    borderColor: '#22c55e',
+    marginRight: 16,
   },
   checkMark: {
-    fontSize: 11,
     color: '#fff',
-    fontWeight: '700',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
-  content: {
+  textDetails: {
     flex: 1,
-    paddingLeft: 12,
-    paddingVertical: 14,
   },
   title: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#f1f1f7',
     fontWeight: '500',
-    lineHeight: 20,
+    marginBottom: 4,
   },
   titleDone: {
     textDecorationLine: 'line-through',
     color: 'rgba(255,255,255,0.3)',
-    fontWeight: '400',
   },
   meta: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 6,
     gap: 8,
+    alignItems: 'center',
   },
-  priorityDot: {
+  priorityTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: 10,
+    borderRadius: 6,
+    gap: 4,
   },
-  priorityDotText: {
+  priorityDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  priorityText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#fff',
-  },
-  doneLabel: {
-    fontSize: 11,
-    color: '#22c55e',
-    fontWeight: '600',
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
   },
-  del: {
-    paddingRight: 14,
-    paddingVertical: 14,
+  categoryTag: {
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
   },
-  delInner: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
-    backgroundColor: 'rgba(255,255,255,0.06)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  delIcon: {
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.3)',
+  categoryText: {
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.4)',
     fontWeight: '600',
+  },
+  deleteBtn: {
+    padding: 8,
+    marginLeft: 8,
+  },
+  deleteIcon: {
+    color: 'rgba(255,255,255,0.15)',
+    fontSize: 16,
   },
 });

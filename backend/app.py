@@ -1,8 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlmodel import Field, Session, SQLModel, create_engine, select, func
 from typing import List, Optional
 from sqlalchemy import text
+from datetime import datetime
 
 # Database setup
 DATABASE_URL = "sqlite:///./todo.db"
@@ -14,16 +15,28 @@ class Todo(SQLModel, table=True):
     title: str
     done: bool = False
     priority: str = Field(default="medium")
+    due_date: Optional[str] = None
+    category: Optional[str] = Field(default="Personal")
+    tags: Optional[str] = None
+    archived: bool = Field(default=False)
+    created_at: str = Field(default_factory=lambda: datetime.now().isoformat())
 
 # Pydantic models for API
 class TodoCreate(SQLModel):
     title: str
     priority: str = "medium"
+    due_date: Optional[str] = None
+    category: Optional[str] = "Personal"
+    tags: Optional[str] = None
 
 class TodoUpdate(SQLModel):
     title: Optional[str] = None
     done: Optional[bool] = None
     priority: Optional[str] = None
+    due_date: Optional[str] = None
+    category: Optional[str] = None
+    tags: Optional[str] = None
+    archived: Optional[bool] = None
 
 # FastAPI app
 app = FastAPI()
@@ -40,26 +53,54 @@ app.add_middleware(
 @app.on_event("startup")
 def migrate():
     with engine.connect() as conn:
-        try:
-            conn.execute(text("ALTER TABLE todo ADD COLUMN priority TEXT NOT NULL DEFAULT 'medium'"))
-            conn.commit()
-        except Exception:
-            pass  # column already exists
+        columns = [
+            ("priority", "TEXT NOT NULL DEFAULT 'medium'"),
+            ("due_date", "TEXT"),
+            ("category", "TEXT DEFAULT 'Personal'"),
+            ("tags", "TEXT"),
+            ("archived", "BOOLEAN DEFAULT 0"),
+            ("created_at", "TEXT")
+        ]
+        for col, definition in columns:
+            try:
+                conn.execute(text(f"ALTER TABLE todo ADD COLUMN {col} {definition}"))
+                conn.commit()
+            except Exception:
+                pass  # column already exists
 
 # Create tables
 SQLModel.metadata.create_all(engine)
 
 # Routes
 @app.get("/todos", response_model=List[Todo])
-def get_todos():
+def get_todos(archived: bool = False):
     with Session(engine) as session:
-        todos = session.exec(select(Todo)).all()
+        statement = select(Todo).where(Todo.archived == archived)
+        todos = session.exec(statement).all()
         return todos
+
+@app.get("/stats")
+def get_stats():
+    with Session(engine) as session:
+        total = session.exec(select(func.count(Todo.id))).one()
+        completed = session.exec(select(func.count(Todo.id)).where(Todo.done == True)).one()
+        pending = total - completed
+        
+        # Get count by category
+        categories = session.execute(text("SELECT category, COUNT(*) FROM todo GROUP BY category")).all()
+        cat_stats = {row[0]: row[1] for row in categories}
+        
+        return {
+            "total": total,
+            "completed": completed,
+            "pending": pending,
+            "categories": cat_stats
+        }
 
 @app.post("/todos", response_model=Todo)
 def create_todo(todo: TodoCreate):
     with Session(engine) as session:
-        db_todo = Todo(title=todo.title, priority=todo.priority)
+        db_todo = Todo(**todo.dict())
         session.add(db_todo)
         session.commit()
         session.refresh(db_todo)
@@ -72,12 +113,9 @@ def update_todo(todo_id: int, todo_update: TodoUpdate):
         if not todo:
             raise HTTPException(status_code=404, detail="Todo not found")
 
-        if todo_update.title is not None:
-            todo.title = todo_update.title
-        if todo_update.done is not None:
-            todo.done = todo_update.done
-        if todo_update.priority is not None:
-            todo.priority = todo_update.priority
+        update_data = todo_update.dict(exclude_unset=True)
+        for key, value in update_data.items():
+            setattr(todo, key, value)
 
         session.add(todo)
         session.commit()

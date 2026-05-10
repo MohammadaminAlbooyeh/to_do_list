@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 
 const getAPIHost = () => {
   if (Platform.OS === 'web') {
-    return 'localhost';
+    return typeof window !== 'undefined' ? window.location.hostname : 'localhost';
   }
   return Platform.OS === 'android' ? '10.0.2.2' : 'localhost';
 };
