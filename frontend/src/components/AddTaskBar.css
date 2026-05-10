@@ -1,0 +1,131 @@
+.add-task-wrap {
+  margin: 0 20px 24px 20px;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding-left: 20px;
+  transition: all 0.3s ease;
+  gap: 8px;
+}
+
+.input-row-focused {
+  border-color: rgba(124, 58, 237, 0.4);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.task-input {
+  flex: 1;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #f1f1f7;
+  padding: 18px 0;
+  outline: none;
+}
+
+.task-input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.add-btn {
+  width: 48px;
+  height: 48px;
+  margin: 6px;
+  border-radius: 16px;
+  background-color: #7c3aed;
+  color: #fff;
+  border: none;
+  font-size: 28px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.add-btn:hover:not(.add-btn-disabled) {
+  transform: scale(1.05);
+}
+
+.add-btn:active:not(.add-btn-disabled) {
+  transform: scale(0.95);
+}
+
+.add-btn-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.options {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.option-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-left: 4px;
+}
+
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.pill:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.pill-inactive {
+  background-color: transparent;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.pill-active {
+  color: #fff;
+}
+
+.pill-category-active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.pill-text {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.pill-text-active {
+  color: #fff;
+}

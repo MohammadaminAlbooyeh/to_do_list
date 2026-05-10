@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from './config';
 
-const api = axios.create({ baseURL: API_BASE_URL, timeout: 8000 });
+const api = axios.create({
+  baseURL: '/api',
+  timeout: 8000
+});
 
 export default function useTodos() {
   const [todos, setTodos] = useState([]);

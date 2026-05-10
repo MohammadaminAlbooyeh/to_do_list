@@ -1,13 +1,13 @@
-FROM node:18-bullseye-slim AS build
+FROM node:18-alpine AS build
 
 WORKDIR /app
 
-COPY package.json ./
+COPY package.json package-lock.json ./
 RUN npm install
 
 COPY . .
 
-RUN npx expo export --platform web
+RUN npm run build
 
 FROM nginx:alpine
 
