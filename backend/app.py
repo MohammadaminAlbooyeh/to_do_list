@@ -6,7 +6,7 @@ from sqlalchemy import text
 from datetime import datetime
 
 # Database setup
-DATABASE_URL = "sqlite:///./todo.db"
+DATABASE_URL = "sqlite:///./data/todo.db"
 engine = create_engine(DATABASE_URL, echo=True)
 
 # Models
