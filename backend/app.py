@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import List, Optional
+from sqlalchemy import text
 
 # Database setup
 DATABASE_URL = "sqlite:///./todo.db"
@@ -11,20 +13,41 @@ class Todo(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     done: bool = False
+    priority: str = Field(default="medium")
 
 # Pydantic models for API
 class TodoCreate(SQLModel):
     title: str
+    priority: str = "medium"
 
 class TodoUpdate(SQLModel):
     title: Optional[str] = None
     done: Optional[bool] = None
-
-# Create tables
-SQLModel.metadata.create_all(engine)
+    priority: Optional[str] = None
 
 # FastAPI app
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Database migration
+@app.on_event("startup")
+def migrate():
+    with engine.connect() as conn:
+        try:
+            conn.execute(text("ALTER TABLE todo ADD COLUMN priority TEXT NOT NULL DEFAULT 'medium'"))
+            conn.commit()
+        except Exception:
+            pass  # column already exists
+
+# Create tables
+SQLModel.metadata.create_all(engine)
 
 # Routes
 @app.get("/todos", response_model=List[Todo])
@@ -36,7 +59,7 @@ def get_todos():
 @app.post("/todos", response_model=Todo)
 def create_todo(todo: TodoCreate):
     with Session(engine) as session:
-        db_todo = Todo(title=todo.title)
+        db_todo = Todo(title=todo.title, priority=todo.priority)
         session.add(db_todo)
         session.commit()
         session.refresh(db_todo)
@@ -48,12 +71,14 @@ def update_todo(todo_id: int, todo_update: TodoUpdate):
         todo = session.exec(select(Todo).where(Todo.id == todo_id)).first()
         if not todo:
             raise HTTPException(status_code=404, detail="Todo not found")
-        
+
         if todo_update.title is not None:
             todo.title = todo_update.title
         if todo_update.done is not None:
             todo.done = todo_update.done
-        
+        if todo_update.priority is not None:
+            todo.priority = todo_update.priority
+
         session.add(todo)
         session.commit()
         session.refresh(todo)
