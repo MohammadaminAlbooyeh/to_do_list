@@ -80,8 +80,8 @@ export default function useTodos() {
     }
   }, [todos, fetchStats]);
 
-  const incomplete = todos.filter(t => !t.done);
-  const completed = todos.filter(t => t.done);
+  const incomplete = Array.isArray(todos) ? todos.filter(t => !t.done) : [];
+  const completed = Array.isArray(todos) ? todos.filter(t => t.done) : [];
 
   return { todos, incomplete, completed, loading, error, stats, fetch, add, toggle, update, remove };
 }
