@@ -36,6 +36,19 @@ export default function AddTaskBar({ value, onChange, onSubmit }) {
           onBlur={() => setIsFocused(false)}
           maxLength={200}
         />
+        <div className="priority-inline">
+          {PRIORITIES.map(p => (
+            <button
+              key={p.key}
+              type="button"
+              className={`pill ${priority === p.key ? 'pill-active' : 'pill-inactive'}`}
+              style={priority === p.key ? { backgroundColor: p.color, borderColor: p.color } : {}}
+              onClick={() => setPriority(p.key)}
+            >
+              <span className={`pill-text ${priority === p.key ? 'pill-text-active' : ''}`}>{p.label}</span>
+            </button>
+          ))}
+        </div>
         <button type="submit" className={`add-btn ${!value || !value.trim() ? 'add-btn-disabled' : ''}`}>
           +
         </button>
@@ -43,23 +56,6 @@ export default function AddTaskBar({ value, onChange, onSubmit }) {
 
       {isFocused && (
         <div className="options">
-          <div className="option-section">
-            <label className="option-label">Priority</label>
-            <div className="pill-row">
-              {PRIORITIES.map(p => (
-                <button
-                  key={p.key}
-                  type="button"
-                  className={`pill ${priority === p.key ? 'pill-active' : 'pill-inactive'}`}
-                  style={priority === p.key ? { backgroundColor: p.color, borderColor: p.color } : {}}
-                  onClick={() => setPriority(p.key)}
-                >
-                  <span className={`pill-text ${priority === p.key ? 'pill-text-active' : ''}`}>{p.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
           <div className="option-section">
             <label className="option-label">Category</label>
             <div className="pill-row">
