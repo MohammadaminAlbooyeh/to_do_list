@@ -36,9 +36,21 @@ export default function AddTaskBar({ value, onChange, onSubmit }) {
     setIsFocused(false);
   };
 
+  const handleFormKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      if (!value || !value.trim()) {
+        showErrorNotification('Please enter a task name');
+      } else if (!priority) {
+        showErrorNotification('Please select a priority (Low, Medium, or High)');
+      } else {
+        handleSubmit(e);
+      }
+    }
+  };
+
   return (
     <div className="add-task-wrap">
-      <form onSubmit={handleSubmit} className={`input-row ${isFocused ? 'input-row-focused' : ''}`}>
+      <form onSubmit={handleSubmit} onKeyDown={handleFormKeyDown} className={`input-row ${isFocused ? 'input-row-focused' : ''}`}>
         <input
           type="text"
           className="task-input"
