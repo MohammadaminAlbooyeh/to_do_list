@@ -114,34 +114,44 @@
 }
 
 .delete-btn {
-  background: none;
+  background-color: #ef4444;
   border: none;
-  color: rgba(255, 255, 255, 0.15);
-  font-size: 16px;
+  color: #fff;
+  font-size: 20px;
   cursor: pointer;
-  padding: 8px;
+  padding: 10px 14px;
   margin-left: 8px;
   flex-shrink: 0;
-  transition: opacity 0.2s ease;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  font-weight: bold;
+  opacity: 0.85;
 }
 
 .delete-btn:hover {
   opacity: 1 !important;
+  background-color: #dc2626;
+  transform: scale(1.1);
 }
 
 .edit-btn {
-  background: none;
+  background-color: #22c55e;
   border: none;
-  color: rgba(255, 255, 255, 0.15);
-  font-size: 14px;
+  color: #fff;
+  font-size: 20px;
   cursor: pointer;
-  padding: 8px;
+  padding: 10px 14px;
   flex-shrink: 0;
-  transition: opacity 0.2s ease;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  font-weight: bold;
+  opacity: 0.85;
 }
 
 .edit-btn:hover {
   opacity: 1 !important;
+  background-color: #16a34a;
+  transform: scale(1.1);
 }
 
 .task-actions {

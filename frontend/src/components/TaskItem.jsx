@@ -138,7 +138,6 @@ export default function TaskItem({ item, onToggle, onDelete, onUpdate }) {
         <button
           className="edit-btn"
           onClick={() => setIsEditing(true)}
-          style={{ opacity: isHovering ? 0.8 : 0.15 }}
           title="Edit task"
         >
           ✎
@@ -146,7 +145,7 @@ export default function TaskItem({ item, onToggle, onDelete, onUpdate }) {
         <button
           className="delete-btn"
           onClick={() => onDelete(item.id)}
-          style={{ opacity: isHovering ? 0.8 : 0.15 }}
+          style={{ opacity: isHovering ? 1 : 0.55 }}
           title="Delete task"
         >
           ✕
