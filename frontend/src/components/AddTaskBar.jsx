@@ -13,14 +13,21 @@ export default function AddTaskBar({ value, onChange, onSubmit }) {
   const [priority, setPriority] = useState(null);
   const [category, setCategory] = useState('Personal');
   const [isFocused, setIsFocused] = useState(false);
-  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const showErrorNotification = (message) => {
+    setErrorMessage(message);
+    setTimeout(() => setErrorMessage(null), 3000);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!value || !value.trim()) return;
+    if (!value || !value.trim()) {
+      showErrorNotification('Please enter a task name');
+      return;
+    }
     if (!priority) {
-      setShowError(true);
-      setTimeout(() => setShowError(false), 3000);
+      showErrorNotification('Please select a priority (Low, Medium, or High)');
       return;
     }
     onSubmit(priority, null, category);
@@ -41,8 +48,14 @@ export default function AddTaskBar({ value, onChange, onSubmit }) {
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && value && value.trim() && priority) {
-              handleSubmit(e);
+            if (e.key === 'Enter') {
+              if (!value || !value.trim()) {
+                showErrorNotification('Please enter a task name');
+              } else if (!priority) {
+                showErrorNotification('Please select a priority (Low, Medium, or High)');
+              } else {
+                handleSubmit(e);
+              }
             }
           }}
           maxLength={200}
@@ -65,10 +78,10 @@ export default function AddTaskBar({ value, onChange, onSubmit }) {
         </button>
       </form>
 
-      {showError && (
+      {errorMessage && (
         <div className="error-notification">
           <span className="error-icon">⚠️</span>
-          <span className="error-message">Please select a priority (Low, Medium, or High)</span>
+          <span className="error-message">{errorMessage}</span>
         </div>
       )}
 
