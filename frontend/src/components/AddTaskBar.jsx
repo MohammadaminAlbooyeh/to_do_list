@@ -13,10 +13,16 @@ export default function AddTaskBar({ value, onChange, onSubmit }) {
   const [priority, setPriority] = useState(null);
   const [category, setCategory] = useState('Personal');
   const [isFocused, setIsFocused] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!value || !value.trim() || !priority) return;
+    if (!value || !value.trim()) return;
+    if (!priority) {
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
+      return;
+    }
     onSubmit(priority, null, category);
     setPriority(null);
     setCategory('Personal');
@@ -53,6 +59,13 @@ export default function AddTaskBar({ value, onChange, onSubmit }) {
           +
         </button>
       </form>
+
+      {showError && (
+        <div className="error-notification">
+          <span className="error-icon">⚠️</span>
+          <span className="error-message">Please select a priority (Low, Medium, or High)</span>
+        </div>
+      )}
 
       {isFocused && (
         <div className="options">
