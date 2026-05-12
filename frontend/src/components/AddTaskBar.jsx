@@ -10,15 +10,15 @@ const PRIORITIES = [
 const CATEGORIES = ['Personal', 'Work', 'Shopping', 'Health', 'Finance'];
 
 export default function AddTaskBar({ value, onChange, onSubmit }) {
-  const [priority, setPriority] = useState('medium');
+  const [priority, setPriority] = useState(null);
   const [category, setCategory] = useState('Personal');
   const [isFocused, setIsFocused] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!value || !value.trim()) return;
+    if (!value || !value.trim() || !priority) return;
     onSubmit(priority, null, category);
-    setPriority('medium');
+    setPriority(null);
     setCategory('Personal');
     setIsFocused(false);
   };
@@ -49,7 +49,7 @@ export default function AddTaskBar({ value, onChange, onSubmit }) {
             </button>
           ))}
         </div>
-        <button type="submit" className={`add-btn ${!value || !value.trim() ? 'add-btn-disabled' : ''}`}>
+        <button type="submit" className={`add-btn ${!value || !value.trim() || !priority ? 'add-btn-disabled' : ''}`}>
           +
         </button>
       </form>

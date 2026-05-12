@@ -7,7 +7,7 @@ import './App.css';
 const CATEGORIES = ['All', 'Personal', 'Work', 'Shopping', 'Health', 'Finance'];
 
 function App() {
-  const { incomplete, completed, loading, error, stats, fetch, add, toggle, remove } = useTodos();
+  const { incomplete, completed, loading, error, stats, fetch, add, toggle, remove, update } = useTodos();
   const [newTitle, setNewTitle] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -22,6 +22,10 @@ function App() {
 
   const handleDelete = (id) => {
     if (window.confirm('Delete this task?')) remove(id);
+  };
+
+  const handleUpdate = (id, updateData) => {
+    update(id, updateData);
   };
 
   const filteredIncomplete = useMemo(() => {
@@ -121,7 +125,7 @@ function App() {
                 </div>
               </div>
               {filteredIncomplete.map(item => (
-                <TaskItem key={item.id} item={item} onToggle={toggle} onDelete={handleDelete} />
+                <TaskItem key={item.id} item={item} onToggle={toggle} onDelete={handleDelete} onUpdate={handleUpdate} />
               ))}
             </div>
           )}
@@ -135,7 +139,7 @@ function App() {
                 </div>
               </div>
               {filteredCompleted.map(item => (
-                <TaskItem key={item.id} item={item} onToggle={toggle} onDelete={handleDelete} />
+                <TaskItem key={item.id} item={item} onToggle={toggle} onDelete={handleDelete} onUpdate={handleUpdate} />
               ))}
             </div>
           )}

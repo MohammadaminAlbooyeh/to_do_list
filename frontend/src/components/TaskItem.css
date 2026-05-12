@@ -128,3 +128,145 @@
 .delete-btn:hover {
   opacity: 1 !important;
 }
+
+.edit-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.15);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease;
+}
+
+.edit-btn:hover {
+  opacity: 1 !important;
+}
+
+.task-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.task-edit-mode {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 16px;
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-title-input {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #f1f1f7;
+  padding: 10px 12px;
+  font-size: 16px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.edit-title-input:focus {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.edit-priority-row,
+.edit-category-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.save-btn {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.save-btn:hover:not(:disabled) {
+  background-color: rgba(34, 197, 94, 0.3);
+  border-color: rgba(34, 197, 94, 0.5);
+}
+
+.save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.cancel-btn:hover {
+  background-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.pill {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pill-inactive {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.pill:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.pill-active {
+  color: #fff;
+  border-color: currentColor;
+}
+
+.pill-text {
+  color: inherit;
+}
+
+.pill-text-active {
+  color: #fff;
+}
+
+.pill-category-active {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #f1f1f7;
+}

@@ -7,9 +7,95 @@ const PRIORITY_COLORS = {
   low: '#22c55e',
 };
 
-export default function TaskItem({ item, onToggle, onDelete }) {
+const PRIORITIES = [
+  { key: 'low', label: 'Low', color: '#22c55e' },
+  { key: 'medium', label: 'Med', color: '#f59e0b' },
+  { key: 'high', label: 'High', color: '#ef4444' },
+];
+
+const CATEGORIES = ['Personal', 'Work', 'Shopping', 'Health', 'Finance'];
+
+export default function TaskItem({ item, onToggle, onDelete, onUpdate }) {
   const [isHovering, setIsHovering] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(item.title);
+  const [editPriority, setEditPriority] = useState(item.priority);
+  const [editCategory, setEditCategory] = useState(item.category || 'Personal');
   const priorityColor = PRIORITY_COLORS[item.priority] || '#f59e0b';
+
+  const handleSaveEdit = () => {
+    if (!editTitle.trim()) return;
+    onUpdate(item.id, {
+      title: editTitle.trim(),
+      priority: editPriority,
+      category: editCategory
+    });
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    setEditTitle(item.title);
+    setEditPriority(item.priority);
+    setEditCategory(item.category || 'Personal');
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return (
+      <div className="task-item task-edit-mode">
+        <div className="edit-form">
+          <input
+            type="text"
+            className="edit-title-input"
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            maxLength={200}
+            autoFocus
+          />
+          <div className="edit-priority-row">
+            {PRIORITIES.map(p => (
+              <button
+                key={p.key}
+                type="button"
+                className={`pill ${editPriority === p.key ? 'pill-active' : 'pill-inactive'}`}
+                style={editPriority === p.key ? { backgroundColor: p.color, borderColor: p.color } : {}}
+                onClick={() => setEditPriority(p.key)}
+              >
+                <span className={`pill-text ${editPriority === p.key ? 'pill-text-active' : ''}`}>{p.label}</span>
+              </button>
+            ))}
+          </div>
+          <div className="edit-category-row">
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                type="button"
+                className={`pill ${editCategory === cat ? 'pill-category-active' : 'pill-inactive'}`}
+                onClick={() => setEditCategory(cat)}
+              >
+                <span className={`pill-text ${editCategory === cat ? 'pill-text-active' : ''}`}>{cat}</span>
+              </button>
+            ))}
+          </div>
+          <div className="edit-actions">
+            <button
+              className="save-btn"
+              onClick={handleSaveEdit}
+              disabled={!editTitle.trim()}
+            >
+              Save
+            </button>
+            <button
+              className="cancel-btn"
+              onClick={handleCancelEdit}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -48,13 +134,24 @@ export default function TaskItem({ item, onToggle, onDelete }) {
         </div>
       </button>
 
-      <button
-        className="delete-btn"
-        onClick={() => onDelete(item.id)}
-        style={{ opacity: isHovering ? 0.8 : 0.15 }}
-      >
-        ✕
-      </button>
+      <div className="task-actions">
+        <button
+          className="edit-btn"
+          onClick={() => setIsEditing(true)}
+          style={{ opacity: isHovering ? 0.8 : 0.15 }}
+          title="Edit task"
+        >
+          ✎
+        </button>
+        <button
+          className="delete-btn"
+          onClick={() => onDelete(item.id)}
+          style={{ opacity: isHovering ? 0.8 : 0.15 }}
+          title="Delete task"
+        >
+          ✕
+        </button>
+      </div>
     </div>
   );
 }
