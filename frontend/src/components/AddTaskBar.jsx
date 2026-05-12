@@ -40,6 +40,11 @@ export default function AddTaskBar({ value, onChange, onSubmit }) {
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && value && value.trim() && priority) {
+              handleSubmit(e);
+            }
+          }}
           maxLength={200}
         />
         <div className="priority-inline">
