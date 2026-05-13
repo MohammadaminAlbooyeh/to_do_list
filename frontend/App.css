@@ -4,11 +4,20 @@
   box-sizing: border-box;
 }
 
-html, body, #root {
+html, body {
   height: 100%;
   width: 100%;
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  background-color: #07070d;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
 }
 
 .container {
@@ -18,11 +27,14 @@ html, body, #root {
   flex-direction: column;
   height: 100%;
   color: #fff;
+  margin-left: 48px;
+  margin-right: 48px;
+  max-width: 1200px;
+  align-self: center;
 }
 
 .header {
-  padding: 24px;
-  padding-bottom: 16px;
+  padding: 32px 24px 16px 24px;
 }
 
 .brand-row {
@@ -75,7 +87,7 @@ html, body, #root {
 
 .progress-bar {
   height: 100%;
-  background-color: #7c3aed;
+  background: linear-gradient(90deg, #7c3aed, #a855f7);
   border-radius: 4px;
   transition: width 0.3s ease;
 }
@@ -101,17 +113,24 @@ html, body, #root {
   display: flex;
   gap: 12px;
   padding-left: 24px;
-  padding-bottom: 16px;
-  overflow-x: auto;
+  padding-bottom: 24px;
+  flex-wrap: wrap;
+  margin-top: 8px;
 }
 
 .stat-card {
   padding: 16px;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 3px solid rgba(124, 58, 237, 0.5);
   background-color: rgba(255, 255, 255, 0.02);
   min-width: 100px;
-  margin-right: 12px;
+  flex: 1;
+  min-width: 120px;
+}
+
+.stat-card.stat-completed {
+  border-left-color: rgba(34, 197, 94, 0.5);
 }
 
 .stat-val {
@@ -136,7 +155,7 @@ html, body, #root {
 }
 
 .filter-section {
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .search-box {
@@ -226,15 +245,18 @@ html, body, #root {
 .tasks-list {
   flex: 1;
   overflow-y: auto;
-  padding: 0 20px 40px 20px;
+  overflow-x: hidden;
+  padding: 0 24px 48px 24px;
+  overscroll-behavior: contain;
 }
 
 .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 0;
-  margin-top: 8px;
+  padding: 16px 0 12px 0;
+  margin-top: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .section-title {
@@ -246,8 +268,9 @@ html, body, #root {
 }
 
 .badge {
-  padding: 8px;
-  border-radius: 8px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .badge-text {
@@ -257,12 +280,23 @@ html, body, #root {
 
 .empty {
   text-align: center;
-  padding: 60px 20px;
+  padding: 80px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty::before {
+  content: '✓';
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.1);
+  margin-bottom: 16px;
 }
 
 .empty-text {
-  color: rgba(255, 255, 255, 0.15);
-  font-size: 14px;
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 16px;
   font-weight: 500;
 }
 

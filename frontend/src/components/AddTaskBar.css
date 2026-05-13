@@ -1,5 +1,5 @@
 .add-task-wrap {
-  margin: 0 20px 24px 20px;
+  margin: 8px 24px 28px 24px;
 }
 
 .input-row {
@@ -26,8 +26,9 @@
 }
 
 .input-row-focused {
-  border-color: rgba(124, 58, 237, 0.4);
-  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(124, 58, 237, 0.6);
+  background-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
 .task-input {
@@ -49,7 +50,7 @@
   height: 48px;
   margin: 6px;
   border-radius: 16px;
-  background-color: #7c3aed;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
   color: #fff;
   border: none;
   font-size: 28px;

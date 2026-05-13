@@ -71,7 +71,7 @@ function App() {
             <div className="stat-val">{stats.pending}</div>
             <div className="stat-label">Pending</div>
           </div>
-          <div className="stat-card" style={{ borderColor: 'rgba(34, 197, 94, 0.2)' }}>
+          <div className="stat-card stat-completed">
             <div className="stat-val" style={{ color: '#22c55e' }}>{stats.completed}</div>
             <div className="stat-label">Completed</div>
           </div>

@@ -100,9 +100,9 @@ export default function TaskItem({ item, onToggle, onDelete, onUpdate }) {
   return (
     <div
       className={`task-item ${item.done ? 'task-done' : ''}`}
+      data-priority={item.priority}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
-      style={item.done ? { opacity: 0.4 } : {}}
     >
       <button
         className="task-content"
