@@ -9,7 +9,6 @@
   padding: 16px 18px;
   gap: 12px;
   transition: all 0.2s ease;
-  user-select: none;
 }
 
 .task-item:hover {

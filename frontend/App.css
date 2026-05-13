@@ -245,9 +245,7 @@ html, body {
 .tasks-list {
   flex: 1;
   overflow-y: auto;
-  overflow-x: hidden;
   padding: 0 24px 48px 24px;
-  overscroll-behavior: contain;
 }
 
 .section-header {
