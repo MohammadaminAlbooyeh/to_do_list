@@ -146,6 +146,7 @@ function App() {
 
           {filteredIncomplete.length === 0 && filteredCompleted.length === 0 && (
             <div className="empty">
+              <div className="empty-icon">✦</div>
               <span className="empty-text">{searchQuery ? 'No results found' : 'No tasks yet'}</span>
             </div>
           )}
